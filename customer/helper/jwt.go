@@ -17,7 +17,7 @@ func GenerateToken(profile domain.Profile) (string, error) {
 	/* Create a map to store our claims */
 	claims := token.Claims.(jwt.MapClaims)
 	/* Set token claims */
-	claims["profile"] = profile
+	claims["profile_id"] = profile.Id
 	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 	tokenString, err := token.SignedString(SecretKey)
 	if err != nil {

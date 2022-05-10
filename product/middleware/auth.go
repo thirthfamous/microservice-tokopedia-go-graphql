@@ -1,16 +1,16 @@
 package middleware
 
 import (
-	"fmt"
+	"context"
 	"mime"
 	"net/http"
+	"thirthfamous/tokopedia-clone-go-graphql/helper"
 )
 
 // type authString string
 
 func EnforceJSONHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("yomasukyo")
 		contentType := r.Header.Get("Content-Type")
 
 		if contentType != "" {
@@ -30,34 +30,33 @@ func EnforceJSONHandler(next http.Handler) http.Handler {
 	})
 }
 
-// func AuthMiddleware(next http.Handler) http.Handler {
-// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-// 		auth := r.Header.Get("Authorization")
+func AuthMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if apiKey := r.Header.Get("X-API-Key"); apiKey != "" && apiKey == "RAHASIA" {
+			r = r.WithContext(context.WithValue(r.Context(), "admin", "ok"))
+			next.ServeHTTP(w, r)
+			return
+		}
 
-// 		if auth == "" {
-// 			next.ServeHTTP(w, r)
-// 			return
-// 		}
+		auth := r.Header.Get("Authorization")
 
-// 		bearer := "Bearer "
-// 		auth = auth[len(bearer):]
+		if auth == "" {
+			next.ServeHTTP(w, r)
+			return
+		}
 
-// 		validate, err := helper.ValidateToken(auth)
-// 		if err != nil || !validate.Valid {
-// 			http.Error(w, "Invalid token", http.StatusForbidden)
-// 			return
-// 		}
+		bearer := "Bearer "
+		auth = auth[len(bearer):]
 
-// 		customClaim, _ := validate.Claims.(*service.JwtCustomClaim)
+		validate, profile_id, err := helper.ParseToken(auth)
+		if err != nil || !validate {
+			http.Error(w, "Invalid token", http.StatusForbidden)
+			return
+		}
 
-// 		ctx := context.WithValue(r.Context(), authString("auth"), customClaim)
+		ctx := context.WithValue(r.Context(), "profile_id", profile_id)
 
-// 		r = r.WithContext(ctx)
-// 		next.ServeHTTP(w, r)
-// 	})
-// }
-
-// func CtxValue(ctx context.Context) *service.JwtCustomClaim {
-// 	raw, _ := ctx.Value(authString("auth")).(*service.JwtCustomClaim)
-// 	return raw
-// }
+		r = r.WithContext(ctx)
+		next.ServeHTTP(w, r)
+	})
+}
