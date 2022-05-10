@@ -28,7 +28,7 @@ func main() {
 		Pretty: true,
 	})
 
-	http.Handle("/graphql", middleware.EnforceJSONHandler(h))
+	http.Handle("/graphql", middleware.EnforceJSONHandler(middleware.AuthMiddleware(h)))
 	http.ListenAndServe(":3002", nil)
 
 }
