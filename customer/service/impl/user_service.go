@@ -100,7 +100,7 @@ func (service *UserServiceImpl) QueryType() *graphql.Object {
 		Name: "RootQuery",
 		Fields: graphql.Fields{
 			"users": &graphql.Field{
-				Type: graphql.NewList(service.UserType()),
+				Type: graphql.NewList(gqltype.UserType()),
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 					user := []domain.User{}
 					result := service.DB.Find(&user)
@@ -111,7 +111,7 @@ func (service *UserServiceImpl) QueryType() *graphql.Object {
 				},
 			},
 			"user": &graphql.Field{
-				Type: service.UserType(),
+				Type: gqltype.UserType(),
 				Args: graphql.FieldConfigArgument{
 					"id": &graphql.ArgumentConfig{
 						Type: graphql.NewNonNull(graphql.Int),
