@@ -15,7 +15,8 @@ func NewUserRepository() UserRepository {
 }
 
 func (repository *UserRepositoryImpl) FindByUsername(db *gorm.DB, username string, user *domain.User) {
-	db.Where("username = ?", username).First(&user)
+	result := db.Where("username = ?", username).First(&user)
+	helper.PanicIfError(result.Error)
 }
 
 func (repository *UserRepositoryImpl) CreateUser(db *gorm.DB, user *domain.User) {
