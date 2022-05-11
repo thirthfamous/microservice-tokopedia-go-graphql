@@ -9,6 +9,8 @@ import (
 	"strings"
 	"testing"
 	"thirthfamous/tokopedia-clone-go-graphql/app"
+	"thirthfamous/tokopedia-clone-go-graphql/helper"
+	"thirthfamous/tokopedia-clone-go-graphql/middleware"
 	"thirthfamous/tokopedia-clone-go-graphql/model/domain"
 	"thirthfamous/tokopedia-clone-go-graphql/repository"
 	productService "thirthfamous/tokopedia-clone-go-graphql/service/impl"
@@ -18,10 +20,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"gorm.io/gorm"
 )
-
-func final(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("ok")
-}
 
 func setupRouter() (http.Handler, *gorm.DB) {
 	db := app.NewDBTest()
@@ -41,7 +39,6 @@ func setupRouter() (http.Handler, *gorm.DB) {
 		Pretty: true,
 	})
 
-	http.Handle("/graphql", h)
 	return h, db
 }
 
@@ -57,13 +54,13 @@ func TestCreateProductEndpointSuccess(t *testing.T) {
 		stock 
 	  }
 	}`)
-	request := httptest.NewRequest(http.MethodPost, "http://localhost:3000/graphql", requestBody)
+	request := httptest.NewRequest(http.MethodPost, "http://localhost:3002/graphql", requestBody)
 	request.Header.Add("Content-Type", "application/graphql")
-	// request.Header.Add("X-API-Key", "RAHASIA")
+	request.Header.Add("X-API-Key", "RAHASIA")
 
 	recorder := httptest.NewRecorder()
 
-	router.ServeHTTP(recorder, request)
+	middleware.EnforceJSONHandler(middleware.AuthMiddleware(router)).ServeHTTP(recorder, request)
 
 	response := recorder.Result()
 	assert.Equal(t, 200, response.StatusCode)
@@ -98,11 +95,12 @@ func TestFindAllProductEndpointSuccess(t *testing.T) {
 	}`)
 	request := httptest.NewRequest(http.MethodPost, "http://localhost:3000/graphql", requestBody)
 	request.Header.Add("Content-Type", "application/graphql")
-	// request.Header.Add("X-API-Key", "RAHASIA")
+	profileId, _ := helper.GenerateToken(1)
+	request.Header.Add("Authorization", "Bearer "+profileId)
 
 	recorder := httptest.NewRecorder()
 
-	router.ServeHTTP(recorder, request)
+	middleware.EnforceJSONHandler(middleware.AuthMiddleware(router)).ServeHTTP(recorder, request)
 
 	response := recorder.Result()
 	assert.Equal(t, 200, response.StatusCode)
