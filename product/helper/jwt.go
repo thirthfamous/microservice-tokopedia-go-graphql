@@ -1,6 +1,9 @@
 package helper
 
 import (
+	"log"
+	"time"
+
 	"github.com/golang-jwt/jwt"
 )
 
@@ -18,4 +21,19 @@ func ParseToken(tokenStr string) (bool, float64, error) {
 	} else {
 		return false, 0, err
 	}
+}
+
+func GenerateToken(profileId int) (string, error) {
+	token := jwt.New(jwt.SigningMethodHS256)
+	/* Create a map to store our claims */
+	claims := token.Claims.(jwt.MapClaims)
+	/* Set token claims */
+	claims["profile_id"] = profileId
+	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+	tokenString, err := token.SignedString(SecretKey)
+	if err != nil {
+		log.Fatal("Error in Generating key")
+		return "", err
+	}
+	return tokenString, nil
 }
