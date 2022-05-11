@@ -2,9 +2,11 @@ package middleware
 
 import (
 	"context"
+	"encoding/json"
 	"mime"
 	"net/http"
 	"thirthfamous/tokopedia-clone-go-graphql/helper"
+	"thirthfamous/tokopedia-clone-go-graphql/model/web"
 )
 
 // type authString string
@@ -21,7 +23,14 @@ func EnforceJSONHandler(next http.Handler) http.Handler {
 			}
 
 			if mt != "application/graphql" {
-				http.Error(w, "Content-Type header must be application/json", http.StatusUnsupportedMediaType)
+				webResponse := web.WebResponse{
+					Code:   http.StatusUnsupportedMediaType,
+					Status: "Content-Type header must be application/json",
+				}
+				w.Header().Add("Content-Type", "application/json")
+				w.WriteHeader(http.StatusUnsupportedMediaType)
+				encoder := json.NewEncoder(w)
+				encoder.Encode(webResponse)
 				return
 			}
 		}
@@ -50,7 +59,14 @@ func AuthMiddleware(next http.Handler) http.Handler {
 
 		validate, profile_id, err := helper.ParseToken(auth)
 		if err != nil || !validate {
-			http.Error(w, "Invalid token", http.StatusForbidden)
+			webResponse := web.WebResponse{
+				Code:   http.StatusForbidden,
+				Status: "Invalid token",
+			}
+			w.Header().Add("Content-Type", "application/json")
+			w.WriteHeader(http.StatusForbidden)
+			encoder := json.NewEncoder(w)
+			encoder.Encode(webResponse)
 			return
 		}
 
