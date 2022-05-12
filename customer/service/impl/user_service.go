@@ -55,7 +55,7 @@ func (service *UserServiceImpl) MutationType() *graphql.Object {
 						},
 					}
 					service.UserRepository.CreateUser(service.DB, &user)
-					profile, _ := helper.GenerateToken(user.Profile)
+					profile, _ := helper.GenerateToken(user.ProfileId)
 					return domain.AuthPayload{
 						Token:   profile,
 						Profile: user.Profile,
@@ -86,7 +86,7 @@ func (service *UserServiceImpl) MutationType() *graphql.Object {
 							Message: "Username atau Password Salah",
 						}
 					}
-					token, _ := helper.GenerateToken(user.Profile)
+					token, _ := helper.GenerateToken(user.ProfileId)
 					return token, nil
 				},
 			},
