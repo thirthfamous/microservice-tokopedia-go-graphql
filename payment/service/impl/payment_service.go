@@ -2,6 +2,7 @@ package impl
 
 import (
 	"fmt"
+	"thirthfamous/tokopedia-clone-go-graphql/messagebroker"
 	"thirthfamous/tokopedia-clone-go-graphql/model/domain"
 	"thirthfamous/tokopedia-clone-go-graphql/model/gqltype"
 	"thirthfamous/tokopedia-clone-go-graphql/repository"
@@ -54,6 +55,8 @@ func (service *PaymentServiceImpl) MutationType() *graphql.Object {
 				},
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 					order := service.PaymentRepository.CustomerPay(service.DB, p.Args["order_id"].(int))
+					fmt.Println("Sending Payment To Queue")
+					messagebroker.SendToMessageQueue("CustomerPay", order.Id)
 					fmt.Println(order)
 					return order, nil
 				},

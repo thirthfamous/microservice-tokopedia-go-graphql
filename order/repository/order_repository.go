@@ -10,4 +10,5 @@ type OrderRepository interface {
 	CreateOrder(db *gorm.DB, order *domain.Order)
 	FindOrderById(db *gorm.DB, orderId int) domain.Order
 	FindOrderByProfileId(db *gorm.DB, orderId int) []domain.Order
+	UpdateOrderStatusToPaid(db *gorm.DB, orderId int) domain.Order
 }

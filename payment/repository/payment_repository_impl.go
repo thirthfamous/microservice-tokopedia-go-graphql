@@ -22,9 +22,9 @@ func (*PaymentRepositoryImpl) CreatePayment(db *gorm.DB, order *domain.Payment) 
 
 // FindProductById implements OrderRepository
 func (*PaymentRepositoryImpl) CustomerPay(db *gorm.DB, orderId int) domain.Payment {
-	result := db.Model(domain.Payment{}).Where("id = ?", orderId).Update("status", 2) //paid
+	result := db.Model(domain.Payment{}).Where("order_id = ?", orderId).Update("status", 2) //paid
 	helper.PanicIfError(result.Error)
 	payment := domain.Payment{}
-	db.Where("id = ?", orderId).Find(&payment)
+	db.Where("order_id = ?", orderId).Find(&payment)
 	return payment
 }

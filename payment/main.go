@@ -16,8 +16,8 @@ func main() {
 	utils.InitEnvironment()
 	db := app.NewDB()
 
-	productRepository := repository.NewOrderRepository()
-	productService := productService.NewProductService(productRepository, db)
+	productRepository := repository.NewPaymentRepository()
+	productService := productService.NewPaymentService(productRepository, db)
 
 	var Schema, _ = graphql.NewSchema(graphql.SchemaConfig{
 		Query:    productService.QueryType(),
@@ -29,6 +29,6 @@ func main() {
 	})
 
 	http.Handle("/graphql", middleware.EnforceJSONHandler(middleware.AuthMiddleware(h)))
-	http.ListenAndServe(":3003", nil)
+	http.ListenAndServe(":3004", nil)
 
 }

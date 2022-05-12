@@ -48,3 +48,19 @@ func TestFindAllProductSuccess(t *testing.T) {
 	result := orderRepository.FindOrderById(db, 1)
 	assert.NotNil(t, result)
 }
+
+func TestUpdateOrderStatusToPaidSuccess(t *testing.T) {
+	db := app.NewDBTest()
+	db.Exec("TRUNCATE `order`;")
+	orderRepository := repository.NewOrderRepository()
+	order := domain.Order{
+		ProfileId:   123,
+		DateOrdered: time.Now(),
+		ProductId:   123,
+		Status:      1,
+	}
+	db.Create(&order)
+
+	result := orderRepository.UpdateOrderStatusToPaid(db, 1)
+	assert.NotNil(t, result)
+}
