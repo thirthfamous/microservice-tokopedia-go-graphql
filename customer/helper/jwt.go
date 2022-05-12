@@ -2,7 +2,6 @@ package helper
 
 import (
 	"log"
-	"thirthfamous/tokopedia-clone-go-graphql/model/domain"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -12,12 +11,12 @@ var (
 	SecretKey = []byte("secret")
 )
 
-func GenerateToken(profile domain.Profile) (string, error) {
+func GenerateToken(profileId int) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	/* Create a map to store our claims */
 	claims := token.Claims.(jwt.MapClaims)
 	/* Set token claims */
-	claims["profile_id"] = profile.Id
+	claims["profile_id"] = profileId
 	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 	tokenString, err := token.SignedString(SecretKey)
 	if err != nil {
