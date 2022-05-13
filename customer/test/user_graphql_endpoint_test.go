@@ -59,7 +59,7 @@ func TestSignupSuccess(t *testing.T) {
 		}
 	  }
 	}`)
-	request := httptest.NewRequest(http.MethodPost, "http://localhost:3000/graphql", requestBody)
+	request := httptest.NewRequest(http.MethodPost, "http://localhost:8080/customer/graphql", requestBody)
 	request.Header.Add("Content-Type", "application/graphql")
 	// request.Header.Add("X-API-Key", "RAHASIA")
 
@@ -100,7 +100,7 @@ func TestSignupDuplicateEntryFailed(t *testing.T) {
 		}
 	  }
 	}`)
-	request := httptest.NewRequest(http.MethodPost, "http://localhost:3000/graphql", requestBody)
+	request := httptest.NewRequest(http.MethodPost, "http://localhost:8080/customer/graphql", requestBody)
 	request.Header.Add("Content-Type", "application/graphql")
 
 	recorder := httptest.NewRecorder()
@@ -134,7 +134,7 @@ func TestLoginSuccess(t *testing.T) {
 	RootMutation {
 	  login(username: "Farhassn", password: "123")
 	}`)
-	request := httptest.NewRequest(http.MethodPost, "http://localhost:3000/graphql", requestBody)
+	request := httptest.NewRequest(http.MethodPost, "http://localhost:8080/customer/graphql", requestBody)
 	request.Header.Add("Content-Type", "application/graphql")
 	// request.Header.Add("X-API-Key", "RAHASIA")
 

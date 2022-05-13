@@ -2,11 +2,13 @@ package impl
 
 import (
 	"fmt"
+	"os"
 	"thirthfamous/tokopedia-clone-go-graphql/messagebroker"
 	"thirthfamous/tokopedia-clone-go-graphql/model/domain"
 	"thirthfamous/tokopedia-clone-go-graphql/model/gqltype"
 	"thirthfamous/tokopedia-clone-go-graphql/repository"
 	"thirthfamous/tokopedia-clone-go-graphql/service"
+	"time"
 
 	"github.com/graphql-go/graphql"
 	"github.com/graphql-go/graphql/gqlerrors"
@@ -38,8 +40,9 @@ func (service *PaymentServiceImpl) MutationType() *graphql.Object {
 				},
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 					order := domain.Payment{
-						OrderId: p.Args["order_id"].(int),
-						Status:  1,
+						OrderId:  p.Args["order_id"].(int),
+						Status:   1,
+						PaidDate: time.Now(),
 					}
 
 					service.PaymentRepository.CreatePayment(service.DB, &order)
@@ -55,8 +58,10 @@ func (service *PaymentServiceImpl) MutationType() *graphql.Object {
 				},
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 					order := service.PaymentRepository.CustomerPay(service.DB, p.Args["order_id"].(int))
-					fmt.Println("Sending Payment To Queue")
-					messagebroker.SendToMessageQueue("CustomerPay", order.Id)
+					if os.Getenv("TESTING") == "false" {
+						fmt.Println("Sending Payment To Queue")
+						messagebroker.SendToMessageQueue("CustomerPay", order.Id)
+					}
 					fmt.Println(order)
 					return order, nil
 				},

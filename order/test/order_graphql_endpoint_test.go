@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 	"thirthfamous/tokopedia-clone-go-graphql/app"
@@ -45,6 +46,7 @@ func setupRouter() (http.Handler, *gorm.DB) {
 
 func TestCreateOrderEndpointSuccess(t *testing.T) {
 	router, _ := setupRouter()
+	os.Setenv("TESTING", "TRUE")
 	profileId, _ := helper.GenerateToken(1)
 
 	requestBody := strings.NewReader(`mutation
@@ -56,7 +58,7 @@ func TestCreateOrderEndpointSuccess(t *testing.T) {
 		status
 	  }
 	}`)
-	request := httptest.NewRequest(http.MethodPost, "http://localhost:3002/graphql", requestBody)
+	request := httptest.NewRequest(http.MethodPost, "http://localhost:8080/order/graphql", requestBody)
 	request.Header.Add("Content-Type", "application/graphql")
 	request.Header.Add("Authorization", "Bearer "+profileId)
 
@@ -96,7 +98,7 @@ func TestFindAllProductEndpointSuccess(t *testing.T) {
 		status
 	  }
 	}`)
-	request := httptest.NewRequest(http.MethodPost, "http://localhost:3000/graphql", requestBody)
+	request := httptest.NewRequest(http.MethodPost, "http://localhost:8080/order/graphql", requestBody)
 	request.Header.Add("Content-Type", "application/graphql")
 	profileId, _ := helper.GenerateToken(1)
 	request.Header.Add("Authorization", "Bearer "+profileId)

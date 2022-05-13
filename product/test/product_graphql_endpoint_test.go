@@ -54,7 +54,7 @@ func TestCreateProductEndpointSuccess(t *testing.T) {
 		stock 
 	  }
 	}`)
-	request := httptest.NewRequest(http.MethodPost, "http://localhost:3002/graphql", requestBody)
+	request := httptest.NewRequest(http.MethodPost, "http://localhost:8080/product/graphql", requestBody)
 	request.Header.Add("Content-Type", "application/graphql")
 	request.Header.Add("X-API-Key", "RAHASIA")
 
@@ -93,7 +93,7 @@ func TestFindAllProductEndpointSuccess(t *testing.T) {
 		stock 
 	  }
 	}`)
-	request := httptest.NewRequest(http.MethodPost, "http://localhost:3000/graphql", requestBody)
+	request := httptest.NewRequest(http.MethodPost, "http://localhost:8080/product/graphql", requestBody)
 	request.Header.Add("Content-Type", "application/graphql")
 	profileId, _ := helper.GenerateToken(1)
 	request.Header.Add("Authorization", "Bearer "+profileId)

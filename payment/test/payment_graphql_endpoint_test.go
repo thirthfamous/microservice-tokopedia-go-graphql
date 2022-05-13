@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 	"thirthfamous/tokopedia-clone-go-graphql/app"
@@ -14,6 +15,7 @@ import (
 	"thirthfamous/tokopedia-clone-go-graphql/model/domain"
 	"thirthfamous/tokopedia-clone-go-graphql/repository"
 	paymentService "thirthfamous/tokopedia-clone-go-graphql/service/impl"
+	"time"
 
 	"github.com/graphql-go/graphql"
 	gqlhandler "github.com/graphql-go/graphql-go-handler"
@@ -45,6 +47,7 @@ func setupRouter() (http.Handler, *gorm.DB) {
 func TestCreatePaymentEndpointSuccess(t *testing.T) {
 	router, _ := setupRouter()
 	profileId, _ := helper.GenerateToken(1)
+	os.Setenv("TESTING", "TRUE")
 
 	requestBody := strings.NewReader(`mutation
 	RootMutation {
@@ -55,7 +58,7 @@ func TestCreatePaymentEndpointSuccess(t *testing.T) {
 		status
 	  }
 	}`)
-	request := httptest.NewRequest(http.MethodPost, "http://localhost:8080/payment/graphql", requestBody)
+	request := httptest.NewRequest(http.MethodPost, "http://127.0.0.1:8080/payment/graphql", requestBody)
 	request.Header.Add("Content-Type", "application/graphql")
 	request.Header.Add("Authorization", "Bearer "+profileId)
 
@@ -76,10 +79,12 @@ func TestCreatePaymentEndpointSuccess(t *testing.T) {
 
 func TestPayCustomerEndpointSuccess(t *testing.T) {
 	router, db := setupRouter()
+	os.Setenv("TESTING", "TRUE")
 
 	payment := domain.Payment{
-		OrderId: 1,
-		Status:  1,
+		OrderId:  1,
+		Status:   1,
+		PaidDate: time.Now(),
 	}
 	db.Create(&payment)
 
@@ -92,7 +97,7 @@ func TestPayCustomerEndpointSuccess(t *testing.T) {
 		status
 	  }
 	}`)
-	request := httptest.NewRequest(http.MethodPost, "http://localhost:8080/payment/graphql", requestBody)
+	request := httptest.NewRequest(http.MethodPost, "http://127.0.0.1:8080/payment/graphql", requestBody)
 	request.Header.Add("Content-Type", "application/graphql")
 	profileId, _ := helper.GenerateToken(1)
 	request.Header.Add("Authorization", "Bearer "+profileId)

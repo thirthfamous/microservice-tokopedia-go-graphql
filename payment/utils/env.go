@@ -7,4 +7,5 @@ func InitEnvironment() {
 	os.Setenv("DB_NAME", "user")
 	os.Setenv("DB_USERNAME", "root")
 	os.Setenv("DB_PASSWORD", "")
+	os.Setenv("TESTING", "false")
 }

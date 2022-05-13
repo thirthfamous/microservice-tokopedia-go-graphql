@@ -15,7 +15,7 @@ func NewDB() *gorm.DB {
 }
 
 func NewDBTest() *gorm.DB {
-	dsn := "root:123@tcp(localhost:3306)/tokopedia_payment_test?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:123@tcp(127.0.0.1:3306)/tokopedia_payment_test?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	helper.PanicIfError(err)
 	return db

@@ -2,6 +2,7 @@ package impl
 
 import (
 	"fmt"
+	"os"
 	"thirthfamous/tokopedia-clone-go-graphql/messagebroker"
 	"thirthfamous/tokopedia-clone-go-graphql/model/domain"
 	"thirthfamous/tokopedia-clone-go-graphql/model/gqltype"
@@ -56,7 +57,9 @@ func (service *ProductServiceImpl) MutationType() *graphql.Object {
 
 					service.OrderRepository.CreateOrder(service.DB, &order)
 					fmt.Print(order)
-					messagebroker.SendToMessageQueue("CreatePayment", order.Id)
+					if os.Getenv("TESTING") == "false" {
+						messagebroker.SendToMessageQueue("CreatePayment", order.Id)
+					}
 
 					return order, nil
 				},
