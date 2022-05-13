@@ -56,8 +56,11 @@ func (service *ProductServiceImpl) MutationType() *graphql.Object {
 					}
 
 					service.OrderRepository.CreateOrder(service.DB, &order)
-					fmt.Print(order)
+					fmt.Println("Creating Order")
+					fmt.Printf("os get env : %v", os.Getenv("TESTING"))
+					fmt.Println(order)
 					if os.Getenv("TESTING") == "false" {
+						fmt.Println("Sending Create Payment Message")
 						messagebroker.SendToMessageQueue("CreatePayment", order.Id)
 					}
 
