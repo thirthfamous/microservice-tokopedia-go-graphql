@@ -63,3 +63,7 @@ go test test/
 ### Architecture
 ![microservices tokopedia clone drawio (1)](https://user-images.githubusercontent.com/30696403/168212961-8045a1ce-3446-4860-a2b0-1b26b208d1e8.png)
 
+
+### Error 
+Q : I got 502 bad gateway, how to fix it
+A : Run command "docker-compose restart nginx-proxy" without double quotes
