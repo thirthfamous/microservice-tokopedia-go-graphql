@@ -66,4 +66,5 @@ go test test/
 
 ### Error 
 Q : I got 502 bad gateway, how to fix it
+
 A : Run command "docker-compose restart nginx-proxy" without double quotes
