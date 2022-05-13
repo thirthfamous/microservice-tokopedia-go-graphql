@@ -1,10 +1,9 @@
-package main
+package channel
 
 import (
 	"encoding/json"
 	"log"
 	"thirthfamous/tokopedia-clone-go-graphql/app"
-	"thirthfamous/tokopedia-clone-go-graphql/model/domain"
 	"thirthfamous/tokopedia-clone-go-graphql/repository"
 
 	"github.com/streadway/amqp"
@@ -16,8 +15,8 @@ func failOnError(err error, msg string) {
 	}
 }
 
-func main() {
-	conn, err := amqp.Dial("amqp://myuser:mypassword@localhost:5672/")
+func Receive() {
+	conn, err := amqp.Dial("amqp://myuser:mypassword@rabbitmq:5672/")
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
@@ -73,17 +72,10 @@ func main() {
 			var responseBody map[string]interface{}
 			json.Unmarshal(d.Body, &responseBody)
 			switch responseBody["Method"] {
-			case "CreatePayment":
-				log.Printf("Creating Payment")
-				repository := repository.NewPaymentRepository()
-				repository.CreatePayment(app.NewDB(), &domain.Payment{
-					OrderId: int(responseBody["OrderId"].(float64)),
-					Status:  1,
-				})
 			case "CustomerPay":
 				log.Printf("Customer Pay")
-				repository := repository.NewPaymentRepository()
-				repository.CustomerPay(app.NewDB(), int(responseBody["OrderId"].(float64)))
+				repository := repository.NewOrderRepository()
+				repository.UpdateOrderStatusToPaid(app.NewDB(), int(responseBody["OrderId"].(float64)))
 			}
 		}
 	}()

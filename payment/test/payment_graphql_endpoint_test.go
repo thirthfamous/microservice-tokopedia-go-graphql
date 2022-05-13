@@ -55,7 +55,7 @@ func TestCreatePaymentEndpointSuccess(t *testing.T) {
 		status
 	  }
 	}`)
-	request := httptest.NewRequest(http.MethodPost, "http://localhost:3005/graphql", requestBody)
+	request := httptest.NewRequest(http.MethodPost, "http://localhost:8080/payment/graphql", requestBody)
 	request.Header.Add("Content-Type", "application/graphql")
 	request.Header.Add("Authorization", "Bearer "+profileId)
 
@@ -92,7 +92,7 @@ func TestPayCustomerEndpointSuccess(t *testing.T) {
 		status
 	  }
 	}`)
-	request := httptest.NewRequest(http.MethodPost, "http://localhost:3005/graphql", requestBody)
+	request := httptest.NewRequest(http.MethodPost, "http://localhost:8080/payment/graphql", requestBody)
 	request.Header.Add("Content-Type", "application/graphql")
 	profileId, _ := helper.GenerateToken(1)
 	request.Header.Add("Authorization", "Bearer "+profileId)

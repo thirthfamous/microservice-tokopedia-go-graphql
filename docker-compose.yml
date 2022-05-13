@@ -1,4 +1,5 @@
-version: '3'
+version: '3.8'
+
 services:
   rabbitmq:
     image: rabbitmq:3.8-management-alpine
@@ -10,3 +11,72 @@ services:
         - '5672:5672'
         # HTTP management UI
         - '15672:15672'
+  payment:
+    build: # Use the Dockerfile from the current directory to build container.
+      context: ./payment
+    container_name: payment
+    restart: always
+    ports: 
+      - "3004"
+    depends_on: 
+      - "db"
+      - "rabbitmq"
+  nginx-proxy:
+    build:
+      dockerfile: Dockerfile
+      context: ./proxy
+    depends_on:
+      - products
+      - shopping
+      - customer
+    restart: always
+    ports:
+      - "8080:8080"
+  customer:
+    build: # Use the Dockerfile from the current directory to build container.
+      context: ./customer
+    container_name: customer
+    restart: always
+    ports: 
+      - "3001"
+    depends_on: 
+      - "rabbitmq"
+      - "db"
+  order:
+    build: # Use the Dockerfile from the current directory to build container.
+      context: ./order
+    container_name: order
+    restart: always
+    ports: 
+      - "3003"
+    depends_on: 
+      - "rabbitmq"
+      - "db"
+  product:
+    build: # Use the Dockerfile from the current directory to build container.
+      context: ./product
+    container_name: product
+    restart: always
+    ports: 
+      - "3002"
+    depends_on: 
+      - "rabbitmq"
+      - "db"
+  
+  db:
+    image: mysql:latest # use latest version of mysql
+    container_name: db # add a name for the container
+    command: --default-authentication-plugin=mysql_native_password
+    restart: unless-stopped
+    environment: # add default values, see docs for more info.
+      MYSQL_USER: user
+      MYSQL_ROOT_PASSWORD: 123
+      MYSQL_PASSWORD: mypassword
+      MYSQL_db: testdb # create this db on startup
+    volumes:
+      - my-db:/var/lib/mysql
+    ports:
+      - '3306:3306'
+ 
+volumes: # add volume to persist data.
+  my-db:

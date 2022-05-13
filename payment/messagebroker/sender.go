@@ -15,7 +15,7 @@ func failOnError(err error, msg string) {
 }
 
 func SendToMessageQueue(method string, orderId int) {
-	conn, err := amqp.Dial("amqp://myuser:mypassword@localhost:5672/")
+	conn, err := amqp.Dial("amqp://myuser:mypassword@rabbitmq:5672/")
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 

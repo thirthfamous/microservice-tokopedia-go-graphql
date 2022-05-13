@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"thirthfamous/tokopedia-clone-go-graphql/app"
+	"thirthfamous/tokopedia-clone-go-graphql/channel"
 	"thirthfamous/tokopedia-clone-go-graphql/repository"
 	userService "thirthfamous/tokopedia-clone-go-graphql/service/impl"
 	"thirthfamous/tokopedia-clone-go-graphql/utils"
@@ -12,6 +13,7 @@ import (
 )
 
 func main() {
+	channel.Migrate()
 	utils.InitEnvironment()
 	db := app.NewDB()
 

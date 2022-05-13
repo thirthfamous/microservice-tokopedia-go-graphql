@@ -1,4 +1,4 @@
-package main
+package channel
 
 import (
 	"database/sql"
@@ -8,10 +8,10 @@ import (
 	"thirthfamous/tokopedia-clone-go-graphql/utils"
 )
 
-func main() {
+func Migrate() {
 
 	/** CONNECT TO THE MYSQL */
-	create_db, err := sql.Open("mysql", "root@tcp(localhost:3306)/")
+	create_db, err := sql.Open("mysql", "root:123@tcp(db:3306)/")
 	if err != nil {
 		panic(err)
 	}
