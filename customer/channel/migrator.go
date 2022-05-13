@@ -3,9 +3,12 @@ package channel
 import (
 	"database/sql"
 	"fmt"
-	"thirthfamous/tokopedia-clone-go-graphql/app"
+	"thirthfamous/tokopedia-clone-go-graphql/helper"
 	"thirthfamous/tokopedia-clone-go-graphql/model/domain"
 	"thirthfamous/tokopedia-clone-go-graphql/utils"
+
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 func Migrate() {
@@ -29,8 +32,8 @@ func Migrate() {
 	}
 
 	utils.InitEnvironment()
-	create_table := app.NewDB()
-	create_table_test := app.NewDBTest()
+	create_table := NewDB()
+	create_table_test := NewDBTest()
 
 	/** MIGRATE THE TABLES */
 	create_table.AutoMigrate(
@@ -42,4 +45,18 @@ func Migrate() {
 		domain.User{},
 	)
 	fmt.Println("Migrate finished")
+}
+
+func NewDB() *gorm.DB {
+	dsn := "root:123@tcp(db:3306)/tokopedia_customer?charset=utf8mb4&parseTime=True&loc=Local"
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	helper.PanicIfError(err)
+	return db
+}
+
+func NewDBTest() *gorm.DB {
+	dsn := "root:123@tcp(db:3306)/tokopedia_customer_test?charset=utf8mb4&parseTime=True&loc=Local"
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	helper.PanicIfError(err)
+	return db
 }
