@@ -26,9 +26,9 @@ services:
       dockerfile: Dockerfile
       context: ./proxy
     depends_on:
-      - products
-      - shopping
-      - customer
+      - "products"
+      - "shopping"
+      - "customer"
     restart: always
     ports:
       - "8080:8080"
